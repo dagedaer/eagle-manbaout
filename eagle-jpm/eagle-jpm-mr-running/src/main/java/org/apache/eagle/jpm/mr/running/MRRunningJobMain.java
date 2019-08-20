@@ -20,6 +20,7 @@ package org.apache.eagle.jpm.mr.running;
 
 public class MRRunningJobMain {
     public static void main(String[] args) {
+
         new MRRunningJobApplication().run(args);
     }
 }

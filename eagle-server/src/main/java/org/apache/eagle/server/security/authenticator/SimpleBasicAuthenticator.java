@@ -50,17 +50,25 @@ public class SimpleBasicAuthenticator implements Authenticator<BasicCredentials,
 
     public Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException {
         PasswordEncryptor passwordEncryptor = EncryptorFactory.getPasswordEncryptor();
-        System.out.println("==================================================");
-        System.out.println("sys_password: " + credentials.getPassword());
-        String sys_password = userAccountRepository.get(credentials.getUsername()).getEncryptedPassword();
-        System.out.println("sys_password: " + sys_password);
+//        System.out.println("==================================================");
+//        System.out.println("登录密码: " + credentials.getPassword());
+//        String sys_password = userAccountRepository.get(credentials.getUsername()).getEncryptedPassword();
+//        System.out.println("sys_password: " + sys_password);
 
         if (userAccountRepository.containsKey(credentials.getUsername())
-            && passwordEncryptor.checkPassword(credentials.getPassword(), sys_password)) {
+            && passwordEncryptor.checkPassword(credentials.getPassword(), userAccountRepository.get(credentials.getUsername()).getEncryptedPassword())
+                ) {
             UserAccount userAccount = userAccountRepository.get(credentials.getUsername());
             return Optional.of(new User(userAccount));
         } else {
             return Optional.absent();
         }
+//
+//        if (true) {
+//            UserAccount userAccount = userAccountRepository.get(credentials.getUsername());
+//            return Optional.of(new User(userAccount));
+//        } else {
+//            return Optional.absent();
+//        }
     }
 }

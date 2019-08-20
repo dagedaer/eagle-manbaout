@@ -346,7 +346,7 @@ This sample configuration is tested in HDP sandbox. `Restarting namenode is requ
         log4j.appender.KAFKA_HDFS_AUDIT.BrokerList=sandbox.hortonworks.com:6667
         log4j.appender.KAFKA_HDFS_AUDIT.KeyClass=org.apache.eagle.log4j.kafka.hadoop.AuditLogKeyer
         log4j.appender.KAFKA_HDFS_AUDIT.Layout=org.apache.log4j.PatternLayout
-        log4j.appender.KAFKA_HDFS_AUDIT.Layout.ConversionPattern=%d{ISO8601} %p %c{2}: %m%n
+        log4j.appender.KAFKA_HDFS_AUDIT.Layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} %p %c{2}: %m%n
         log4j.appender.KAFKA_HDFS_AUDIT.ProducerType=async
         #log4j.appender.KAFKA_HDFS_AUDIT.BatchSize=1
         #log4j.appender.KAFKA_HDFS_AUDIT.QueueSize=1

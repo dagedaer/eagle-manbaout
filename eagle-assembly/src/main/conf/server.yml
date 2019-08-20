@@ -64,7 +64,7 @@ auth:
   simple:
     accounts:
       - name: admin
-        password: rWV/cdTCr01wTLBQ/rUilkExd2TJKrifXuCCTEwig1o08K8Mi0b1qQAgVXpPqflb
+        password: 123456
         roles: ADMINISTRATOR
         firstName: Admin
         lastName: Admin

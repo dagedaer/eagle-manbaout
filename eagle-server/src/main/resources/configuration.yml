@@ -63,7 +63,7 @@ auth:
   # for basic authentication, effective only when auth.mode=simple
   simple:
     accounts:
-        name: admin
+      - name: admin
         password: 123456
         roles: ADMINISTRATOR
         firstName: Admin

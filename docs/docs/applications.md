@@ -30,7 +30,9 @@ an alert is sent in several seconds. The whole pipeline of this application is
 
 * Kafka sink: parsed data will flows into Kafka again, which will be consumed by the alert engine. 
 
-* Policy evaluation: the alert engine (hosted in Alert Engine app) evaluates each data event to check if the data violate the user defined policy. An alert is generated if the data matches the policy.
+* Policy evaluation: the alert engine (hosted in Alert Engine app) evaluates
+ each data event to check if the data violate the user defined policy. 
+An alert is generated if the data matches the policy.
 
 ![HDFSAUDITLOG](include/images/hdfs_audit_log.png)
 

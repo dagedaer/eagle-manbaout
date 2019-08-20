@@ -464,8 +464,12 @@ class JmxMetricCollector(MetricCollector):
             jmx_url = protocol+"://"+str(host) + ":" + str(port)
             logging.error("Failed to read jmx for " + jmx_url)
             logging.exception(e)
-
     def run(self):
+
+
+
+
+
         size=str(len(self.input_components))
         logging.info("Starting jmx reading threads (num: " + size + ")")
         reader_threads = []
@@ -474,7 +478,7 @@ class JmxMetricCollector(MetricCollector):
             reader_thread.daemon = False
             logging.info(reader_thread.name + " starting")
             reader_thread.start()
-            reader_threads.append(reader_thread)
+            reader_threads.append()
         for reader_thread in reader_threads:
             logging.info(reader_thread.name + " stopping")
             reader_thread.join(timeout = 45)
@@ -501,6 +505,7 @@ class JmxMetricCollector(MetricCollector):
 
         for key, value in bean.iteritems():
             self.on_bean_kv(metric_prefix_name, source, key, value)
+
 
         for listener in self.listeners:
             try:

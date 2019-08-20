@@ -102,6 +102,7 @@ public class TestApplicationManagementServiceImpl {
     @Test
     public void testInstall() throws EntityNotFoundException {
         when(applicationEntityService.create(any(ApplicationEntity.class))).thenReturn(generateCommonEntity());
+        System.out.println(installOperation.getJarPath());
         resultEntity = applicationManagementService.install(installOperation);
         Assert.assertNotNull(resultEntity);
     }

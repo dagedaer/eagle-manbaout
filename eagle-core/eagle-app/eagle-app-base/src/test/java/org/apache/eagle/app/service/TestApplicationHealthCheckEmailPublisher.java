@@ -41,13 +41,16 @@ public class TestApplicationHealthCheckEmailPublisher {
     public void testOnUnHealthApplication() throws Exception {
         Config config = ConfigFactory.parseMap(new HashMap<String, String>() {
             {
-                put("mail.smtp.recipients", "recipient@eagle.com");
-                put("mail.smtp.sender", "sender@eagle.com");
+                put("mail.smtp.recipients", "397975579@qq.com");
+                put("mail.smtp.sender", "397975579@qq.com");
                 put("mail.smtp.subject", "test_subject");
-                put("mail.smtp.cc", "cc@eagle.com");
+                put("mail.smtp.cc", "397975579@qq.com");
                 put("mail.smtp.template", "test_template");
-                put("mail.smtp.host", "localhost");
+                put("mail.smtp.host", "smtp.qq.com");
                 put("mail.smtp.port", "25");
+                put("mail.smtp.auth","true");
+                put("mail.username","397975579@qq.com");
+                put("mail.password","fangxin650515889");
                 put("host", "localhost");
                 put("port", "9090");
             }
