@@ -79,6 +79,7 @@ public class MRRunningJobApplication extends StormApplication {
         // parse running/accepted app metrics
         topologyBuilder.setBolt("mrRunningJobMetricBolt", new MRRunningAppMetricBolt(mrRunningJobConfig), 1)
                 .setNumTasks(1).shuffleGrouping(spoutName, APP_TO_METRIC_STREAM);
+
         topologyBuilder.setBolt("acceptedAppSink", environment.getStreamSink("ACCEPTED_APP_STREAM", config), 1)
                 .setNumTasks(1).shuffleGrouping("mrRunningJobMetricBolt");
 

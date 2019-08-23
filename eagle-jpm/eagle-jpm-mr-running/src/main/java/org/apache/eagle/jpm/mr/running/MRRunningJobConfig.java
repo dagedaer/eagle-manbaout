@@ -129,6 +129,7 @@ public class MRRunningJobConfig implements Serializable {
         this.eagleServiceConfig.readTimeoutSeconds = config.getInt("service.readTimeOutSeconds");
 
         //parse data source config
+        // 这里是从
         this.endpointConfig.rmUrls = config.getString("endpointConfig.rmUrls").split(",");
         this.endpointConfig.site = config.getString("siteId");
         this.endpointConfig.fetchRunningJobInterval = config.getInt("endpointConfig.fetchRunningJobInterval");

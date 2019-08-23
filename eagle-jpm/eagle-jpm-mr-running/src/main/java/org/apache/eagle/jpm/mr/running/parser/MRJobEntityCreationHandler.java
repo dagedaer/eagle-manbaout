@@ -55,7 +55,7 @@ public class MRJobEntityCreationHandler {
             metricEntities = taskMetricsListener.generateMetrics((TaskExecutionAPIEntity) entity);
             entities.addAll(metricEntities);
         } else if (entity instanceof JobExecutionAPIEntity) {
-            metricEntities = jobMetricsListener.generateMetrics((JobExecutionAPIEntity) entity);
+            metricEntities = jobMetricsListener.zz((JobExecutionAPIEntity) entity);
             entities.addAll(metricEntities);
         }*/
         if (entity instanceof JobExecutionAPIEntity) {

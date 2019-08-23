@@ -47,7 +47,8 @@ public class KafkaSourcedSpoutProvider {
 
         // Kafka broker zk connection
         String zkConnString = context.getString("dataSourceConfig.zkQuorum");
-
+        System.out.println("================================================================");
+        System.out.println(zkConnString);
         // transaction zkRoot
         String zkRoot = context.getString("dataSourceConfig.transactionZKRoot");
 

@@ -23,8 +23,10 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.apache.eagle.common.DateTimeUtil;
 import org.apache.eagle.jpm.mr.running.parser.MRJobParser;
 import org.apache.eagle.jpm.mr.running.recover.MRRunningJobManager;
+import org.apache.eagle.jpm.mr.running.storm.MRRunningAppMetricBolt;
 import org.apache.eagle.jpm.mr.running.storm.MRRunningJobFetchSpout;
 import org.apache.eagle.jpm.mr.running.storm.MRRunningJobParseBolt;
 import org.apache.eagle.jpm.mr.runningentity.JobExecutionAPIEntity;
@@ -34,6 +36,7 @@ import org.apache.eagle.jpm.util.resourcefetch.model.AppInfo;
 import org.apache.eagle.jpm.util.resourcefetch.model.AppsWrapper;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.eagle.log.entity.GenericMetricEntity;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,12 +46,16 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static org.apache.eagle.jpm.mr.running.storm.MRRunningAppMetricBolt.metrics;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -71,13 +78,58 @@ public class MRRunningJobApplicationTest {
         OBJ_MAPPER.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS, true);
     }
 
+    /***
+     * java.lang.ClassCastException: java.lang.Long cannot be cast to java.lang.Integer
+     at org.apache.eagle.jpm.mr.running.storm.MRRunningAppMetricBolt.parseRunningAppMetrics(MRRunningAppMetricBolt.java:143) ~[stormjar.jar:na]
+     * @throws Exception
+     */
+    private enum AggLevel {
+        CLUSTER("cluster"), QUEUE("queue"), USER("user");
+
+        private String name;
+
+        AggLevel(String name) {
+            this.name = name;
+        }
+    }
+    @Test
+    public void testMRRuningJOBMetricBolt() throws IOException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+          final long AGGREGATE_INTERVAL = DateTimeUtil.ONEMINUTE;
+
+         final String USER_TAG = "user";
+         final String QUEUE_TAG = "queue";
+         final String SITE_TAG = "site";
+        InputStream previousmrrunningapp = this.getClass().getResourceAsStream("/previousmrrunningapp.json");
+        AppsWrapper appsWrapper = OBJ_MAPPER.readValue(previousmrrunningapp, AppsWrapper.class);
+        List<AppInfo> appInfos = appsWrapper.getApps().getApp();
+        AppInfo app1 = appInfos.get(0);
+        Tuple tuple = Testing.testTuple(new Values(app1.getId(), app1, null));
+        long timestamp = System.currentTimeMillis() / AGGREGATE_INTERVAL * AGGREGATE_INTERVAL;
+        Map<String, GenericMetricEntity> appMetricEntities = new HashMap<>();
+        for (AppInfo app : appInfos) {
+            for (AggLevel level : AggLevel.values()) {
+                //Map<String, String> tags = generateMetricTags(level, app);
+                System.out.println(metrics.keySet());
+                for (java.util.Map.Entry<String, String> entry : metrics.entrySet()) {
+                   // System.out.println(entry.getValue());
+                    Method method = AppInfo.class.getMethod(entry.getValue());
+                    //Integer value = Integer.parseInt(String.valueOf(method.invoke(app)));
+
+                    Integer value = (Integer) method.invoke(app);
+                    System.out.println(value);
+                    String metricName = String.format(entry.getKey(), level.name);
+                    System.out.println(metricName);
+                 //   createMetric(appMetricEntities, timestamp, tags, metricName, value);
+                }
+            }
+        }
+    }
 
     @Test
     public void testMRRunningJobParseBolt() throws Exception {
         mockStatic(Executors.class);
         ExecutorService executorService = mock(ExecutorService.class);
         when(Executors.newFixedThreadPool(anyInt())).thenReturn(executorService);
-
 
         Config config = ConfigFactory.load();
         MRRunningJobConfig mrRunningJobConfig = MRRunningJobConfig.newInstance(config);

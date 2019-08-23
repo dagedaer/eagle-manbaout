@@ -54,7 +54,7 @@ public class MRRunningJobFetchSpout extends BaseRichSpout {
                                   MRRunningJobConfig.ZKStateConfig zkStateConfig) {
         this.endpointConfig = endpointConfig;
         this.zkStateConfig = zkStateConfig;
-        this.init = false;
+        this.init= false;
         this.runningYarnApps = new HashSet<>();
     }
 
@@ -72,6 +72,7 @@ public class MRRunningJobFetchSpout extends BaseRichSpout {
             List<AppInfo> apps;
             Map<String, Map<String, JobExecutionAPIEntity>> mrApps = null;
             if (!this.init) {
+
                 mrApps = recoverRunningApps();
 
                 apps = new ArrayList<>();
@@ -83,16 +84,19 @@ public class MRRunningJobFetchSpout extends BaseRichSpout {
                         this.runningYarnApps.add(appId);
                     }
                 }
+                // rm 的rm信息存在于hbase而不是zookeeper所以这里是不使用的，需要修改
                 LOG.info("recover {} mr yarn apps from zookeeper", apps.size());
                 this.init = true;
             } else {
                 LOG.info("going to fetch all mapReduce running applications");
+                // 这里是RMResourceFetcher,通过接口获取集群信息
                 apps = resourceFetcher.getResource(
                         Constants.ResourceType.RUNNING_MR_JOB,
                         endpointConfig.limitPerRequest,
                         endpointConfig.requestsNum,
                         endpointConfig.timeRangePerRequestInMin);
                 LOG.info("get {} running apps from resource manager", apps.size());
+                //"appMetricStream";
                 collector.emit(MRRunningJobConfig.APP_TO_METRIC_STREAM, new Values(apps));
 
                 Set<String> runningAppIdsAtThisTime = runningAppIdsAtThisTime(apps);
@@ -166,8 +170,7 @@ public class MRRunningJobFetchSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declareStream(MRRunningJobConfig.APP_TO_JOB_STREAM,
-                new Fields("appId", "appInfo", "mrJobEntity"));
+        outputFieldsDeclarer.declareStream(MRRunningJobConfig.APP_TO_JOB_STREAM, new Fields("appId", "appInfo", "mrJobEntity"));
         outputFieldsDeclarer.declareStream(MRRunningJobConfig.APP_TO_METRIC_STREAM, new Fields("apps"));
     }
 
